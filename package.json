@@ -1,0 +1,19 @@
+{
+  "name": "alex_taylor_sudoku",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha "
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "description": ""
+}
