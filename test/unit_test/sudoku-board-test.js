@@ -3,57 +3,67 @@ var SudokuBoard = require('../../sudoku-board').SudokuBoard;
 var helper = require('./helper');
 
 describe('SudokuBoard', function() {
-  var correctBoard = new SudokuBoard(helper.correctArray);
-  var incorrectBoard = new SudokuBoard(helper.incorrectArray);
-  var unsolvedBoard = new SudokuBoard(helper.unsolvedArray);
-  var unsolvedBrokenBoard = new SudokuBoard(helper.unsolvedBrokenArray);
-  var unsolvedHARDBoard = new SudokuBoard(helper.unsolvedHARDArray);
 
-  describe('constructor', function() {
-    var emptyBoard = new SudokuBoard(helper.emptyArray);
-    var correctBoard = new SudokuBoard(helper.correctArray);
-
-    it('should create a board with a boardArray property', function() {
-      expect(emptyBoard).to.have.property('boardArray');
-      expect(correctBoard).to.have.property('boardArray');
+  describe('CONSTRUCTOR', function() {
+    it('should create a SudokuBoard object with a boardArray property', function() {
+      var sudokuBoard = new SudokuBoard();
+      expect(sudokuBoard).to.be.a('object');
+      expect(sudokuBoard).to.have.property('boardArray');
     });
 
+    it('should set the boardArray to a 0-filled 2D array if no parameter is given', function() {
+      var emptyBoard = new SudokuBoard();
+      expect(emptyBoard.boardArray).to.deep.equal(helper.emptyArray);
+    });
+
+    it('should set the boardArray to what is put in params if a param is given', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
+      expect(correctBoard.boardArray).to.deep.equal(helper.correctArray);
+
+      var incorrectBoard = new SudokuBoard(helper.incorrectArray);
+      expect(incorrectBoard.boardArray).to.deep.equal(helper.incorrectArray);
+
+      var emptyBoard = new SudokuBoard(helper.emptyArray);
+      expect(emptyBoard.boardArray).to.deep.equal(helper.emptyArray);
+    })
+
     it('should provide the boardArray property with an array of 9 elements (9 rows)', function() {
-      expect(emptyBoard.boardArray).to.have.lengthOf(9);
-      expect(correctBoard.boardArray).to.have.lengthOf(9);
+      var sudokuBoard = new SudokuBoard();
+      expect(sudokuBoard.boardArray).to.have.lengthOf(9);
     });
 
     it('should provide each element of the boardArray array with an inner array of 9 elements (9 cols)', function() {
-      for (var row of emptyBoard.boardArray) {
-        expect(row).to.have.lengthOf(9);
-      }
-
-      for (var row of correctBoard.boardArray) {
+      var sudokuBoard = new SudokuBoard();
+      for (var row of sudokuBoard.boardArray) {
         expect(row).to.have.lengthOf(9);
       }
     });
 
     it('should provide boardArray with exactly 81 elements', function() {
+      var sudokuBoard = new SudokuBoard();
       var numElements1 = 0;
-      for (var row of emptyBoard.boardArray) {
+      for (var row of sudokuBoard.boardArray) {
         numElements1 += row.length;
       }
       expect(numElements1).to.be.equal(81);
 
+      var correctBoard = new SudokuBoard(helper.correctArray);
       var numElements2 = 0;
-      for (var row of correctBoard.boardArray) {
+      for (var row of sudokuBoard.boardArray) {
         numElements2 += row.length;
       }
       expect(numElements2).to.be.equal(81);
     });
 
     it('should entirely fill the board with numbers', function() {
-      for (var row of emptyBoard.boardArray) {
+      var sudokuBoard = new SudokuBoard();
+      for (var row of sudokuBoard.boardArray) {
         for (var num of row) {
           expect(num).to.be.a('number');
         }
       }
 
+      var correctBoard = new SudokuBoard(helper.correctArray);
       for (var row of correctBoard.boardArray) {
         for (var num of row) {
           expect(num).to.be.a('number');
@@ -63,10 +73,10 @@ describe('SudokuBoard', function() {
 
     it('should use its own copy of 2D array passed into its parameters', function() {
       var correctBoard = new SudokuBoard(helper.correctArray);
-      expect(correctBoard.getRows()).to.deep.equal(helper.correctArray);
+      expect(correctBoard.boardArray).to.deep.equal(helper.correctArray);
       correctBoard.boardArray[0][0] = -1;
-      expect(correctBoard.getRows()).to.not.deep.equal(helper.correctArray);
-      expect(helper.correctArrayClone).to.deep.equal(helper.correctArray);
+      expect(correctBoard.boardArray).to.not.deep.equal(helper.correctArray);
+      expect(helper.correctArray).to.deep.equal(helper.correctArrayClone);
     });
   });
 
@@ -81,35 +91,45 @@ describe('SudokuBoard', function() {
 
   describe('#getRows()', function() {
     it('should return array of arrays of each row in a SudokuBoard', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
       expect(correctBoard.getRows()).to.deep.equal(helper.correctArray);
     });
 
     it('should return a 2D array equal to the SudokuBoard boardArray property', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
       expect(correctBoard.getRows()).to.deep.equal(correctBoard.boardArray);
     });
   });
 
   describe('#getCols()', function() {
     it('should return an array of arrays of each collumn in a SudokuBoard', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
       expect(correctBoard.getCols()).to.deep.equal(helper.correctArrayAfterGetCols);
     });
   });
 
   describe('#getBoxes()', function() {
     it('should return an array of arrays of each "box" of the SudokuBoard', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
       expect(correctBoard.getBoxes()).to.deep.equal(helper.correctArrayAfterGetBoxes);
     });
   });
 
-  xdescribe('#insert()', function() {
-    var unsolvedSudokuBoard = new SudokuBoard(helper.unsolvedInputArray);
-
+  describe('#insert()', function() {
     it('should replace blanks with numbers from an array', function() {
+      var unsolvedSudokuBoard = new SudokuBoard(helper.unsolvedInputArray);
       var arr = [9, 2, 5, 9, 7];
       unsolvedSudokuBoard.insert(arr);
-      expect(helper.unsolvedInputArray).to.deep.equal(helper.unsolvedArray);
       expect(unsolvedSudokuBoard.getRows()).to.deep.equal(helper.correctArray);
-      expect(helper.unsolvedInputArray).to.deep.equal(helper.unsolvedArray);
+    });
+
+    it('should not affect the input array', function() {
+      var unsolvedSudokuBoard = new SudokuBoard(helper.unsolvedInputArray);
+      var arr = [9, 2, 5, 9, 7];
+      var arrClone = [9, 2, 5, 9, 7];
+      expect(arr).to.deep.equal(arrClone);
+      unsolvedSudokuBoard.insert(arr);
+      expect(arr).to.deep.equal(arrClone);
     });
   });
 
@@ -164,11 +184,17 @@ describe('SudokuBoard', function() {
 
   describe('#allRowsSatisfySolution()', function() {
     it('returns true if all rows satisfy solution', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
+      var result = correctBoard.allRowsSatisfySolution();
+      expect(result).to.equal(true);
+
+      var correctBoard = new SudokuBoard(helper.correctHARDArray);
       var result = correctBoard.allRowsSatisfySolution();
       expect(result).to.equal(true);
     });
 
     it('returns true if any rows fail to satisfy solution', function() {
+      var incorrectBoard = new SudokuBoard(helper.incorrectInputArray);
       var result = incorrectBoard.allRowsSatisfySolution();
       expect(result).to.equal(false);
     });
@@ -176,11 +202,17 @@ describe('SudokuBoard', function() {
 
   describe('#allColsSatisfySolution()', function() {
     it('returns true if an entire board is correct (only checking cols)', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
+      var result = correctBoard.allColsSatisfySolution();
+      expect(result).to.equal(true);
+
+      var correctBoard = new SudokuBoard(helper.correctHARDArray);
       var result = correctBoard.allColsSatisfySolution();
       expect(result).to.equal(true);
     });
 
     it('returns false if an entire board is incorrect (only checking cols)', function() {
+      var incorrectBoard = new SudokuBoard(helper.incorrectInputArray);
       var result = incorrectBoard.allColsSatisfySolution();
       expect(result).to.equal(false);
     });
@@ -188,23 +220,35 @@ describe('SudokuBoard', function() {
 
   describe('#allBoxesSatisfySolution()', function() {
     it('returns true if an entire board is correct (only checking boxes)', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
+      var result = correctBoard.allBoxesSatisfySolution();
+      expect(result).to.equal(true);
+
+      var correctBoard = new SudokuBoard(helper.correctHARDArray);
       var result = correctBoard.allBoxesSatisfySolution();
       expect(result).to.equal(true);
     });
 
     it('returns false if an entire board is incorrect (only checking boxes)', function() {
+      var incorrectBoard = new SudokuBoard(helper.incorrectInputArray);
       var result = incorrectBoard.allBoxesSatisfySolution();
       expect(result).to.equal(false);
     });
   });
 
   describe('#isSolved()', function() {
-    it('returns true if everything is correct', function(){
+    it('returns true if everything is correct', function() {
+      var correctBoard = new SudokuBoard(helper.correctArray);
+      var result = correctBoard.isSolved();
+      expect(result).to.equal(true);
+
+      var correctBoard = new SudokuBoard(helper.correctHARDArray);
       var result = correctBoard.isSolved();
       expect(result).to.equal(true);
     });
 
-    it('returns false if anything is incorrect', function(){
+    it('returns false if anything is incorrect', function() {
+      var incorrectBoard = new SudokuBoard(helper.incorrectInputArray);
       var result = incorrectBoard.isSolved();
       expect(result).to.equal(false);
     });

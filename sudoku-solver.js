@@ -2,59 +2,30 @@ var SudokuBoard = require('./sudoku-board').SudokuBoard;
 
 function SudokuSolver() {};
 
+SudokuSolver.generateInitialArrayOfInputs = function(num) {
+  var arr = [];
+  for (var i = 0; i < num; i++) {
+    arr.push(1);
+  }
+  return arr;
+}
+
 SudokuSolver.solve = function(sudokuBoard) {
-  var numInts = SudokuSolver.countNumBlanks(sudokuBoard);
-
-  var testSolutionArr = [];
-  for (var i = 0; i < numInts; i++) {
-    testSolutionArr.push(1);
+  var numBlanks = SudokuSolver.countNumBlanks(sudokuBoard);
+  if (numBlanks === 0) {
+    return new SudokuBoard(sudokuBoard.getRows());
   }
-
-  //copy arr1 into arr2
-  function copyArray(arr1, solvingSudokuBoard) {
-    solvingSudokuBoard.boardArray = [];
-    for (var y = 0; y < arr1.length; y++) {
-      solvingSudokuBoard.boardArray[y] = [];
-      for (var x = 0; x < arr1[y].length; x++) {
-        var val = arr1[y][x];
-        //console.log('val is '+ val);
-        solvingSudokuBoard.boardArray[y].push(val);
-      }
-    }
-    console.log('here is arr2: ');
-    console.log(solvingSudokuBoard.toString());
-  }
-
-
-  // we create a copy of the main sudoku
-  var solvingSudokuBoard = new SudokuBoard([]);
-  copyArray(this.boardArray, solvingSudokuBoard);
-  console.log('here is solvingSudokuBoard (should have 0s): \n' + solvingSudokuBoard.toString());
-  console.log('here is mainSudokuBoard (should have 0s): \n' + this.toString());
-
-  // we go through a loop until we solve the sudoku
-  var solved = false;
-  while (solved === false) {
-    console.log('trying: ' + testSolutionArr + '\n');
-    solvingSudokuBoard.putVals(testSolutionArr); // input our test values
-    if (solvingSudokuBoard.isSolved() === true) {
-      solved = true;
+  potentialSolutionArray = SudokuSolver.generateInitialArrayOfInputs(numBlanks);
+  while(!SudokuSolver.arrayIsMaxed(potentialSolutionArray)) {
+    solutionBoard = new SudokuBoard(sudokuBoard.getRows());
+    solutionBoard.insert(potentialSolutionArray);
+    if (solutionBoard.isSolved()) {
+      return solutionBoard;
     } else {
-      copyArray(this.boardArray, solvingSudokuBoard.boardArray); // set solvingSudokuBoard back to normal
-
-      console.log('here is solvingSudokuBoard (should have 0s): \n' + solvingSudokuBoard.toString());
-
-      if (arrayIsMaxed(testSolutionArr)) { // if we've already tried every possible solution...
-        console.log('*****ERROR COULD NOT FIND SOLUTION***** WAS TRYING ' + testSolutionArr.length);
-        return 'error';
-      }
-      testSolutionArr = incrementArray(testSolutionArr); // get the next solution
+      potentialSolutionArray = SudokuSolver.incrementArray(potentialSolutionArray);
     }
   }
-
-  //when solvingSudokuBoard is is finally correct...
-  console.log(solvingSudokuBoard.toString());
-  return solvingSudokuBoard;
+  return 'error: no solution exists';
 }
 
 SudokuSolver.countNumBlanks = function(sudokuBoard) {
@@ -69,8 +40,7 @@ SudokuSolver.countNumBlanks = function(sudokuBoard) {
   return numBlanks;
 }
 
-SudokuSolver.arrayIsMaxed = function(array) { // check if every value in the array is 9
-  console.log('the array is :' + array);
+SudokuSolver.arrayIsMaxed = function(array) {
   for (var num of array) {
     if (num != 9) {
       return false;

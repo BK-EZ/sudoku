@@ -1,6 +1,19 @@
-function SudokuBoard(boardArr) {
-  var clonedBoardArr = JSON.parse(JSON.stringify(boardArr)); // deep copies array- but only works with primitives!
-  this.boardArray = clonedBoardArr;
+function SudokuBoard(boardArray) {
+  if(!boardArray) {
+    this.boardArray = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+  } else {
+    this.boardArray = JSON.parse(JSON.stringify(boardArray)); // deep copies array- but only works with primitives!
+  }
 }
 
 SudokuBoard.arraySatisfiesSolution = function(arr) {
@@ -158,10 +171,11 @@ SudokuBoard.prototype.getBoxes = function() {
 }
 
 SudokuBoard.prototype.insert = function(arr) {
+  inputVals = arr.slice(0);
   for (var row of this.boardArray) {
     for (var index in row) {
       if (row[index] === 0) {
-        row[index] = arr.shift(); // shift pops value at 0th index
+        row[index] = inputVals.shift(); // shift pops value at 0th index
       }
     }
   }
