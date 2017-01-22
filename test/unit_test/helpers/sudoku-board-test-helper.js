@@ -1,15 +1,13 @@
-var emptyRow = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
 var emptyArray = [
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
 var correctArray = [
@@ -22,6 +20,42 @@ var correctArray = [
   [7, 1, 8, 6, 3, 4, 9, 5, 2],
   [9, 5, 3, 2, 8, 1, 7, 6, 4],
   [4, 2, 6, 9, 7, 5, 8, 1, 3]
+];
+
+var correctArrayClone = [
+  [1, 3, 5, 8, 4, 6, 2, 9, 7],
+  [6, 7, 4, 3, 9, 2, 5, 8, 1],
+  [8, 9, 2, 1, 5, 7, 3, 4, 6],
+  [2, 8, 9, 4, 1, 3, 6, 7, 5],
+  [3, 4, 7, 5, 6, 8, 1, 2, 9],
+  [5, 6, 1, 7, 2, 9, 4, 3, 8],
+  [7, 1, 8, 6, 3, 4, 9, 5, 2],
+  [9, 5, 3, 2, 8, 1, 7, 6, 4],
+  [4, 2, 6, 9, 7, 5, 8, 1, 3]
+];
+
+var correctArrayAfterGetCols = [
+  [1, 6, 8, 2, 3, 5, 7, 9, 4],
+  [3, 7, 9, 8, 4, 6, 1, 5, 2],
+  [5, 4, 2, 9, 7, 1, 8, 3, 6],
+  [8, 3, 1, 4, 5, 7, 6, 2, 9],
+  [4, 9, 5, 1, 6, 2, 3, 8, 7],
+  [6, 2, 7, 3, 8, 9, 4, 1, 5],
+  [2, 5, 3, 6, 1, 4, 9, 7, 8],
+  [9, 8, 4, 7, 2, 3, 5, 6, 1],
+  [7, 1, 6, 5, 9, 8, 2, 4, 3]
+];
+
+var correctArrayAfterGetBoxes = [
+  [1, 3, 5, 6, 7, 4, 8, 9, 2],
+  [8, 4, 6, 3, 9, 2, 1, 5, 7],
+  [2, 9, 7, 5, 8, 1, 3, 4, 6],
+  [2, 8, 9, 3, 4, 7, 5, 6, 1],
+  [4, 1, 3, 5, 6, 8, 7, 2, 9],
+  [6, 7, 5, 1, 2, 9, 4, 3, 8],
+  [7, 1, 8, 9, 5, 3, 4, 2, 6],
+  [6, 3, 4, 2, 8, 1, 9, 7, 5],
+  [9, 5, 2, 7, 6, 4, 8, 1, 3]
 ];
 
 var incorrectArray = [
@@ -96,14 +130,28 @@ var correctHARDArray = [
   [7, 8, 4, 5, 3, 6, 1, 9, 2]
 ];
 
+var emptyBoardToString =
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n' +
+  '0 0 0 0 0 0 0 0 0 \n';
+
 module.exports = {
-  emptyRow: emptyRow,
   emptyArray: emptyArray,
   correctArray: correctArray,
+  correctArrayClone: correctArrayClone,
+  correctArrayAfterGetCols: correctArrayAfterGetCols,
+  correctArrayAfterGetBoxes: correctArrayAfterGetBoxes,
   incorrectArray: incorrectArray,
   unsolvedArray: unsolvedArray,
   unsolvedInputArray: unsolvedInputArray,
   unsolvedBrokenArray: unsolvedBrokenArray,
   unsolvedHARDArray: unsolvedHARDArray,
-  correctHARDArray: correctHARDArray
+  correctHARDArray: correctHARDArray,
+  emptyBoardToString: emptyBoardToString
 }

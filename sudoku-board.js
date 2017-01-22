@@ -1,44 +1,40 @@
-function SudokuBoard(boardArray) {
-  this.boardArray = boardArray;
+function SudokuBoard(boardArr) {
+  var clonedBoardArr = JSON.parse(JSON.stringify(boardArr)); // deep copies array- but only works with primitives!
+  this.boardArray = clonedBoardArr;
 }
 
-SudokuBoard.prototype.checkEverything = function() {
-  if (this.checkboardArray() && this.checkAllCols() && this.checkAllBoxes()) {
-    return true;
+SudokuBoard.arraySatisfiesSolution = function(arr) {
+  if(arr.length !== 9) {
+    return false;
   }
-  return false;
-}
-
-SudokuBoard.prototype.displayAll = function() {
-  for (var y = 0; y < 9; y++) {
-    for (var x = 0; x < 9; x++) {
-      console.log(y + ' ' + x + ': ' + this.boardArray[y][x]);
-    }
-  }
-};
-
-SudokuBoard.prototype.displayGrid = function() {
-  var gridString = '';
-  for (var row of this.boardArray) { // for each row
-    for (var element of row) { // for each col within a row
-      gridString += element; // coordinates
-      gridString += ' '
-    }
-    gridString += '\n'
-  }
-  return gridString;
-}
-
-function checkArrayWorks(array) {
-  var hashMap = {};
-  for (var val of array) {
-    if (hashMap[val] || val === 0) { // if something is already here (we found a duplicate)
+  var uniqueNumsInArr = {};
+  for (var num of arr) {
+    if (uniqueNumsInArr[num] || num > 9 || num < 1) {
       return false;
-    } else { // if this value hasnt been added yet
-      hashMap[val] = 1;
+    } else {
+      uniqueNumsInArr[num] = 1;
     }
   }
   return true;
+}
+
+SudokuBoard.prototype.isSolved = function() {
+  return (this.allRowsSatisfySolution() && this.allColsSatisfySolution() && this.allBoxesSatisfySolution());
+}
+
+SudokuBoard.prototype.toString = function() {
+  var boardAsString = '';
+  for (var row of this.boardArray) {
+    for (var num of row) {
+      boardAsString += (num + ' ');
+    }
+    boardAsString += '\n'
+  }
+  return boardAsString;
+}
+
+SudokuBoard.prototype.getRows = function() {
+  return this.boardArray;
 }
 
 SudokuBoard.prototype.getCols = function() {
@@ -52,46 +48,32 @@ SudokuBoard.prototype.getCols = function() {
   return allCols;
 }
 
-SudokuBoard.prototype.checkboardArray = function() {
+SudokuBoard.prototype.allRowsSatisfySolution = function() {
   for (var row of this.boardArray) {
-    if (checkArrayWorks(row) == false) {
+    if (SudokuBoard.arraySatisfiesSolution(row) == false) {
       return false
     }
   }
   return true;
 }
 
-SudokuBoard.prototype.checkAllCols = function() {
-  for (var col of this.getCols()) { // one element of array of cols
-    if (checkArrayWorks(col) == false) {
+SudokuBoard.prototype.allColsSatisfySolution = function() {
+  for (var col of this.getCols()) {
+    if (SudokuBoard.arraySatisfiesSolution(col) == false) {
       return false
     }
   }
   return true;
 }
 
-SudokuBoard.prototype.checkAllBoxes = function() {
-  for (var box of this.getBoxes()) { // one element of array of cols
-    if (checkArrayWorks(box) == false) {
+SudokuBoard.prototype.allBoxesSatisfySolution = function() {
+  for (var box of this.getBoxes()) {
+    if (SudokuBoard.arraySatisfiesSolution(box) == false) {
       return false
     }
   }
   return true;
 }
-
-SudokuBoard.prototype.countNumBlanks = function() {
-  var tracker = 0;
-  for (var row of this.boardArray) { // for each row
-    for (var element of row) { // for each col within a row
-      if (element === 0) {
-        tracker += 1
-      }
-    }
-  }
-  return tracker;
-}
-
-
 
 SudokuBoard.prototype.getBoxes = function() {
   var boxRow1 = this.boardArray.filter(function(val, index) {
@@ -175,103 +157,16 @@ SudokuBoard.prototype.getBoxes = function() {
   return allBoxes;
 }
 
-SudokuBoard.prototype.putVals = function(array) {
-  for (var row of this.boardArray) { // for each row
-    for (var index in row) { // for each col within a row
+SudokuBoard.prototype.insert = function(arr) {
+  for (var row of this.boardArray) {
+    for (var index in row) {
       if (row[index] === 0) {
-        row[index] = array.shift(); //array.shift() removes and returns the first element of the array
+        row[index] = arr.shift(); // shift pops value at 0th index
       }
     }
   }
 }
-
-SudokuBoard.prototype.solve = function() {
-  console.log(this.displayGrid());
-  // figure out how many numbers we need
-  var numInts = this.countNumBlanks();
-
-  // set up the testSolution array
-  var testSolutionArr = [];
-  for (var i = 0; i < numInts; i++) {
-    testSolutionArr.push(1);
-  }
-
-  //copy arr1 into arr2
-  function copyArray(arr1, solvingSudokuBoard) {
-    solvingSudokuBoard.boardArray = [];
-    for (var y = 0; y < arr1.length; y++) {
-      solvingSudokuBoard.boardArray[y] = [];
-      for (var x = 0; x < arr1[y].length; x++) {
-        var val = arr1[y][x];
-        //console.log('val is '+ val);
-        solvingSudokuBoard.boardArray[y].push(val);
-      }
-    }
-    console.log('here is arr2: ');
-    console.log(solvingSudokuBoard.displayGrid());
-  }
-
-
-  // we create a copy of the main sudoku
-  var solvingSudokuBoard = new SudokuBoard([]);
-  copyArray(this.boardArray, solvingSudokuBoard);
-  console.log('here is solvingSudokuBoard (should have 0s): \n' + solvingSudokuBoard.displayGrid());
-  console.log('here is mainSudokuBoard (should have 0s): \n' + this.displayGrid());
-
-  // we go through a loop until we solve the sudoku
-  var solved = false;
-  while (solved === false) {
-    console.log('trying: ' + testSolutionArr + '\n');
-    solvingSudokuBoard.putVals(testSolutionArr); // input our test values
-    if (solvingSudokuBoard.checkEverything() === true) {
-      solved = true;
-    } else {
-      copyArray(this.boardArray, solvingSudokuBoard.boardArray); // set solvingSudokuBoard back to normal
-
-      console.log('here is solvingSudokuBoard (should have 0s): \n' + solvingSudokuBoard.displayGrid());
-
-      if (alreadyTriedMax(testSolutionArr)) { // if we've already tried every possible solution...
-        console.log('*****ERROR COULD NOT FIND SOLUTION***** WAS TRYING ' + testSolutionArr.length);
-        return 'error';
-      }
-      testSolutionArr = nextTestSolutionArr(testSolutionArr); // get the next solution
-    }
-  }
-
-  //when solvingSudokuBoard is is finally correct...
-  console.log(solvingSudokuBoard.displayGrid());
-  return solvingSudokuBoard;
-}
-
-function alreadyTriedMax(array) { // check if every value in the array is 9
-  console.log('the array is :' + array);
-  for (var num of array) {
-    if (num != 9) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function nextTestSolutionArr(array) {
-  var solutionStr = '';
-  for (var num of array) {
-    solutionStr += num;
-  }
-  var solutionInt = parseInt(solutionStr);
-  solutionInt++;
-  solutionStr = solutionInt.toString();
-  var solutionArr = [];
-  for (var char of solutionStr) {
-    solutionArr.push(parseInt(char));
-  }
-  return solutionArr;
-}
-
 
 module.exports = {
   SudokuBoard: SudokuBoard,
-  checkArrayWorks: checkArrayWorks,
-  nextTestSolutionArr: nextTestSolutionArr,
-  alreadyTriedMax: alreadyTriedMax
 };
