@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var SudokuBoard = require('../../sudoku-board').SudokuBoard;
 var SudokuSolver = require('../../sudoku-solver').SudokuSolver;
-var helper = require('./helpers/sudoku-board-test-helper.js');
+var helper = require('./helper');
 
 describe('SudokuSolver', function() {
 
